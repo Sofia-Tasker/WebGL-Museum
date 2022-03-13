@@ -1,8 +1,8 @@
 # CS 432 Final Project
 
-<h2> Collaborators: Miyo Imai and Sofia Tasker<h3>
+Collaborators: Miyo Imai and Sofia Tasker
 
-<p> For this project we will create a virtual gallery. To view this project run:
+    For this project we will create a virtual gallery. To view this project run:
 
     python3 -m http.server
 

@@ -2,7 +2,7 @@
 
 Collaborators: Miyo Imai and Sofia Tasker
 
-    For this project we will create a virtual gallery. To view this project run:
+For this project we will create a virtual gallery. To view this project run:
 
     python3 -m http.server
 

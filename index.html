@@ -17,14 +17,20 @@
 
 </head>
 <body>
-<canvas id="gl-canvas" width="512" height="512">
-Not supported
-</canvas>
-<h1>Controls</h1>
-<p>up/down arrows: move forward/backward</p>
-<p>left/right arrows: move right/left</p>
-<p>z/a: roll counterclockwise/clockwise</p>
-<p>x/s: pitch up/down</p>
-<p>c/d: yaw counterclockwise/clockwise</p>
+<div style="display:flex;">
+    <div style="flex:1; margin-right: 10px;">
+        <canvas id="gl-canvas" width="512" height="512">Not supported</canvas>
+    </div>
+    <div style="flex:1;">
+        <h1>Controls</h1>
+        <p>up/down arrows: move forward/backward</p>
+        <p>left/right arrows: move right/left</p>
+        <p>z/a: roll counterclockwise/clockwise</p>
+        <p>x/s: pitch up/down</p>
+        <p>c/d: yaw counterclockwise/clockwise</p>
+        <p>spacebar: toggle between cameras</p>
+        <p>Note: camera movement is only available for camera positioned in the center of the room</p>
+    </div>
+</div>
 </body>
 </html>

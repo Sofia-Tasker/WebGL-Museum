@@ -190,7 +190,13 @@ class Camera{
 	}
 }
 
-var camera1 = new Camera(vec3(x,y,z), vec3(1,0,0), vec3(0,1,0), vec3(0,0,1));
+var camera1 = new Camera(vec3(0,0.5,2), vec3(1,0,0), vec3(0,1,0), vec3(0,0,1));
+var cameraA = new Camera(vec3(0,0.5,2), vec3(1,0,0), vec3(0,1,0), vec3(0,0,1));
+var cameraB = new Camera(vec3(0,4.5,4.5), vec3(1,0,0), vec3(0,Math.sqrt(2)/2,-Math.sqrt(2)/2), vec3(0,Math.sqrt(2)/2,Math.sqrt(2)/2));
+
+var cameraMoveable = true;
+//var camera1 = new Camera(vec3(0,0.5,2), vec3(1,0,0), vec3(0,1,0), vec3(0,0,1));
+//var camera1 = new Camera(vec3(0,4.5,4.5), vec3(1,0,0), vec3(0,Math.sqrt(2)/2,-Math.sqrt(2)/2), vec3(0,Math.sqrt(2)/2,Math.sqrt(2)/2));
 var light1 = new Light(vec3(lightX,lightY,lightZ),vec3(dirX,dirY,dirZ),vec4(1,1,1,1), vec4(1,1,1,1), vec4(1,1,1,1),0,0,3);
 var light2 = new Light(vec3(x,y,z), vec3(1,0,0),vec4(0.0,0.0,0.0,0.0),vec4(1,1,1,1), vec4(1,1,1,1),0,Math.PI,2);
 
@@ -278,53 +284,63 @@ window.onload = function init(){
 
 	document.addEventListener('keydown', function(event) {
 		// up arrow
-		if(event.keyCode == 38) {
+		if(event.keyCode == 38 && cameraMoveable) {
 			camera1.moveForward();
 		}
 
 		// down arrow
-		if(event.keyCode == 40) {
+		if(event.keyCode == 40 && cameraMoveable) {
 			camera1.moveBackward();
 		}
 
 		// left arrow
-		if(event.keyCode == 37) {
+		if(event.keyCode == 37 && cameraMoveable) {
 			camera1.moveLeft();
 		}
 
 		// right arrow
-		if(event.keyCode == 39) {
+		if(event.keyCode == 39 && cameraMoveable) {
 			camera1.moveRight();
 		}
 
 		// z key
-		if(event.keyCode == 90) {
+		if(event.keyCode == 90 && cameraMoveable) {
 			camera1.rotateRight();
 		}
 
 		// a key
-		if (event.keyCode == 65) {
+		if (event.keyCode == 65 && cameraMoveable) {
 			camera1.rotateLeft();
 		}
 
 		// x key
-		if (event.keyCode == 88) {
+		if (event.keyCode == 88 && cameraMoveable) {
 			camera1.goDown();
 		}
 
 		// s key
-		if (event.keyCode == 83) {
+		if (event.keyCode == 83 && cameraMoveable) {
 			camera1.goUp();
 		}
 
 		// c key
-		if (event.keyCode == 67) {
+		if (event.keyCode == 67 && cameraMoveable) {
 			camera1.goRight();
 		}
 
 		// d key
-		if (event.keyCode == 68) {
+		if (event.keyCode == 68 && cameraMoveable) {
 			camera1.goLeft();
+		}
+
+		// spacebar
+		if (event.keyCode == 32) {
+			if (cameraMoveable) {
+				camera1 = cameraB;
+			} else {
+				camera1 = cameraA;
+			}
+			cameraMoveable = !cameraMoveable;
 		}
 	});
 };
@@ -341,8 +357,6 @@ function render(){
 		room1.draw();
 		gl.enable(gl.DEPTH_TEST);
 
-		//cube.draw();
-		// sphere.draw();
 		ground1.draw();
 
 		platform1bottom.draw();
@@ -360,7 +374,7 @@ function render(){
 		platform5bottom.draw();
 		platform5top.draw();
 
-		smf.draw();
+		//smf.draw();
 	}, 100);
 }
 

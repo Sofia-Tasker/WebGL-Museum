@@ -91,23 +91,8 @@ class Camera{
 		return this.vrp;
 	}
 
-	// moveForward() {
-	// 	this.vrp[2] -= 0.2;
-	// 	this.updateCameraMatrix();
-	// }
-
 	moveForward() {
-		let translation = translate(0,0,2);
-		let r = mat4(this.u[0], this.u[1], this.u[2], 0,
-    		this.v[0], this.v[1], this.v[2], 0,
-    		this.n[0], this.n[1], this.n[2], 0,
-    		0.0, 0.0, 0.0, 0.0);
-		let newMatrix = mult(r,translation);
-		console.log(newMatrix);
-		console.log(r);
-		this.u = vec3(newMatrix[0][0], newMatrix[0][1], newMatrix[0][2]);
-		this.v = vec3(newMatrix[1][0], newMatrix[1][1], newMatrix[1][2]);
-		this.n = vec3(newMatrix[2][0], newMatrix[2][1], newMatrix[2][2]);
+		this.vrp[2] -= 0.2;
 		this.updateCameraMatrix();
 	}
 	
@@ -206,7 +191,7 @@ class Camera{
 }
 
 var camera1 = new Camera(vec3(x,y,z), vec3(1,0,0), vec3(0,1,0), vec3(0,0,1));
-var light1 = new Light(vec3(lightX,lightY,lightZ),vec3(dirX,dirY,dirZ),vec4(0.4,0.4,0.4,1.0), vec4(1,1,1,1), vec4(1,1,1,1),0,0,3);
+var light1 = new Light(vec3(lightX,lightY,lightZ),vec3(dirX,dirY,dirZ),vec4(1,1,1,1), vec4(1,1,1,1), vec4(1,1,1,1),0,0,3);
 var light2 = new Light(vec3(x,y,z), vec3(1,0,0),vec4(0.0,0.0,0.0,0.0),vec4(1,1,1,1), vec4(1,1,1,1),0,Math.PI,2);
 
 class Drawable{
@@ -261,16 +246,32 @@ window.onload = function init(){
     var scaleSphere = 1.0;
 	var scaleCube = 0.35;
 	var scaleGround = 5.0;
-    var amb = vec4(0.2,0.2,0.2,1.0);
-    var dif = vec4(0.6,0.1,0.0,1.0);
+    var amb = vec4(1,1,1,1.0);
+    var dif = vec4(0.6,0.4,0.4,1.0);
     var spec = vec4(1.0,1.0,1.0,1.0);
     var shine = 100.0
 
-    // cube = new Cube(posCube[0],posCube[1],posCube[2],scaleCube,rot[0],rot[1],rot[2],amb,dif,spec,shine);
+    //cube = new Cube(posCube[0],posCube[1],posCube[2],scaleCube,rot[0],rot[1],rot[2],amb,dif,spec,shine);
+	//cube = new Cube(0,0.1,0,0.1,0,0,0,amb,dif,spec,shine);
 	// sphere = new Sphere(posSphere[0],posSphere[1],posSphere[2],scaleSphere,rot[0],rot[1],rot[2],amb,dif,spec,shine);
 	ground1 = new Ground(posGround[0],posGround[1],posGround[2],scaleGround,rot[0],rot[1],rot[2],amb,dif,spec,shine);
 	room1 = new Sky(0,0,0,5,0,0,0,amb,dif,spec,shine);
-    
+
+    platform1bottom = new PlatformBottom(0,0,0,0.2,0,0,0,amb,dif,spec,shine);
+	platform1top = new PlatformTop(0,0,0,0.2,0,0,0,amb,dif,spec,shine);
+
+	platform2bottom = new PlatformBottom(3,0,-3,0.2,0,0,0,amb,dif,spec,shine);
+	platform2top = new PlatformTop(3,0,-3,0.2,0,0,0,amb,dif,spec,shine);
+
+	platform3bottom = new PlatformBottom(-3,0,-3,0.2,0,0,0,amb,dif,spec,shine);
+	platform3top = new PlatformTop(-3,0,-3,0.2,0,0,0,amb,dif,spec,shine);
+
+	platform4bottom = new PlatformBottom(-3,0,3,0.2,0,0,0,amb,dif,spec,shine);
+	platform4top = new PlatformTop(-3,0,3,0.2,0,0,0,amb,dif,spec,shine);
+
+	platform5bottom = new PlatformBottom(3,0,3,0.2,0,0,0,amb,dif,spec,shine);
+	platform5top = new PlatformTop(3,0,3,0.2,0,0,0,amb,dif,spec,shine);
+
     render();
 
 	document.addEventListener('keydown', function(event) {
@@ -338,9 +339,24 @@ function render(){
 		room1.draw();
 		gl.enable(gl.DEPTH_TEST);
 
-		// cube.draw();
+		//cube.draw();
 		// sphere.draw();
 		ground1.draw();
+
+		platform1bottom.draw();
+		platform1top.draw();
+
+		platform2bottom.draw();
+		platform2top.draw();
+
+		platform3bottom.draw();
+		platform3top.draw();
+
+		platform4bottom.draw();
+		platform4top.draw();
+
+		platform5bottom.draw();
+		platform5top.draw();
 	}, 100);
 }
 

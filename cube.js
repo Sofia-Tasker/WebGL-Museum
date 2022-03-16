@@ -174,7 +174,6 @@ class Cube extends Drawable{
     
     draw() {
 		if (Cube.texture == -1 && Cube.imagesLoaded != 6) {
-			console.log("cube returned");
 			return;
 		}
     

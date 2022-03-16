@@ -232,6 +232,7 @@ class Drawable{
 
 // var cube;
 // var sphere;
+var orb;
 var ground1;
 var room1;
 var theta = 0;
@@ -248,9 +249,11 @@ window.onload = function init(){
     var posSphere = vec3(-0.5,1,0);
 	var posCube = vec3(0.5,1,0);
 	var posGround = vec3(0,0,0);
+	var posOrb = vec3(0.0,0.9,0);
     var rot = vec3(0,0,0);
     var scaleSphere = 1.0;
 	var scaleCube = 0.35;
+	var scaleOrb = 1.0;
 	var scaleGround = 5.0;
     var amb = vec4(1,1,1,1.0);
     var dif = vec4(0.6,0.4,0.4,1.0);
@@ -279,6 +282,11 @@ window.onload = function init(){
 	platform5top = new PlatformTop(3,0,3,0.2,0,0,0,amb,dif,spec,shine);
 
 	smf = new SMF(0,0,0,5,0,0,0,"bunny.smf");
+
+	orb = new Orb(posOrb[0],posOrb[1],posOrb[2],scaleOrb,rot[0],rot[1],rot[2],amb,dif,spec,shine);
+
+	objects = [ground1, room1, platform1bottom, platform1top, platform2bottom, platform2top,platform3bottom, platform3top,platform4bottom, platform4top,platform5bottom, platform5top]
+
 
     render();
 
@@ -374,7 +382,9 @@ function render(){
 		platform5bottom.draw();
 		platform5top.draw();
 
-		//smf.draw();
+		smf.draw();
+
+		orb.draw();
 	}, 100);
 }
 

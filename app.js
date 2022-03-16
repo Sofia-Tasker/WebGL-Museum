@@ -272,6 +272,8 @@ window.onload = function init(){
 	platform5bottom = new PlatformBottom(3,0,3,0.2,0,0,0,amb,dif,spec,shine);
 	platform5top = new PlatformTop(3,0,3,0.2,0,0,0,amb,dif,spec,shine);
 
+	smf = new SMF(0,0,0,5,0,0,0,"bunny.smf");
+
     render();
 
 	document.addEventListener('keydown', function(event) {
@@ -357,6 +359,8 @@ function render(){
 
 		platform5bottom.draw();
 		platform5top.draw();
+
+		smf.draw();
 	}, 100);
 }
 

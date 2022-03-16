@@ -382,8 +382,7 @@ function render(){
 		platform5bottom.draw();
 		platform5top.draw();
 
-		smf.draw();
-
+		//smf.draw();
 		orb.draw();
 	}, 100);
 }

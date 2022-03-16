@@ -1,8 +1,10 @@
 #version 300 es
 in vec3 aPosition;
+in vec4 aColor;
 in vec3 aNormal;
 
 out vec3 texCoord;
+out vec4 vColor;
 
 uniform mat4 modelMatrix, cameraMatrix, projectionMatrix;
 
@@ -59,4 +61,5 @@ void main()
     spotlightColor.a = 1.0;
     
     texCoord = normalize(aPosition.xyz);
+    vColor = 0.4*aColor+0.4*lightColor+0.9*spotlightColor;
 }

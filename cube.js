@@ -117,7 +117,7 @@ class Cube extends Drawable{
             
         }
         
-        image1.src = "textures/crate_texture.jpg";
+        image1.src = "textures/wood-texture.jpg";
     }
 
     

@@ -191,12 +191,10 @@ class Camera{
 }
 
 var camera1 = new Camera(vec3(0,0.5,2), vec3(1,0,0), vec3(0,1,0), vec3(0,0,1));
-var cameraA = new Camera(vec3(0,0.5,2), vec3(1,0,0), vec3(0,1,0), vec3(0,0,1));
-var cameraB = new Camera(vec3(0,4.5,4.5), vec3(1,0,0), vec3(0,Math.sqrt(2)/2,-Math.sqrt(2)/2), vec3(0,Math.sqrt(2)/2,Math.sqrt(2)/2));
+// var cameraA = new Camera(vec3(0,0.5,2), vec3(1,0,0), vec3(0,1,0), vec3(0,0,1));
+// var cameraB = new Camera(vec3(0,4.5,4.5), vec3(1,0,0), vec3(0,Math.sqrt(2)/2,-Math.sqrt(2)/2), vec3(0,Math.sqrt(2)/2,Math.sqrt(2)/2));
 
 var cameraMoveable = true;
-//var camera1 = new Camera(vec3(0,0.5,2), vec3(1,0,0), vec3(0,1,0), vec3(0,0,1));
-//var camera1 = new Camera(vec3(0,4.5,4.5), vec3(1,0,0), vec3(0,Math.sqrt(2)/2,-Math.sqrt(2)/2), vec3(0,Math.sqrt(2)/2,Math.sqrt(2)/2));
 var light1 = new Light(vec3(lightX,lightY,lightZ),vec3(dirX,dirY,dirZ),vec4(1,1,1,1), vec4(1,1,1,1), vec4(1,1,1,1),0,0,3);
 var light2 = new Light(vec3(x,y,z), vec3(1,0,0),vec4(0.0,0.0,0.0,0.0),vec4(1,1,1,1), vec4(1,1,1,1),0,Math.PI,2);
 
@@ -228,6 +226,11 @@ class Drawable{
 	
 		this.modelMatrix = mult(t,mult(s,mult(rz,mult(ry,rx))));
     }
+
+	rotateObject(num) {
+		this.modelRotationY += num;
+		this.updateModelMatrix();
+	}
 }
 
 var smf1;
@@ -237,12 +240,34 @@ var smf4;
 var orb;
 var ground1;
 var room1;
-var theta = 0;
+var showReflection = false;
 
 window.onload = function init(){
     canvas = document.getElementById( "gl-canvas" );
     gl = canvas.getContext('webgl2');
     if ( !gl ) { alert( "WebGL 2.0 isn't available" ); }
+
+	gl.canvas.addEventListener('mousedown', (e) => {
+		mouseX = e.clientX * 2 / canvas.width - 1;
+		mouseY = 1 - 2 * e.clientY / canvas.height;
+		var pFront = vec4(mouseX, mouseY, -1, 1);
+		var pCam = mult(inverse(camera1.projectionMatrix), pFront);
+		pCam[0] = pCam[0] / pCam[3];
+		pCam[1] = pCam[1] / pCam[3];
+		pCam[2] = pCam[2] / pCam[3];
+		pCam[3] = pCam[3] / pCam[3];
+
+		var pWorld = mult(inverse(camera1.cameraMatrix),pCam);
+		pWorld[0] = pWorld[0] / pWorld[3];
+		pWorld[1] = pWorld[1] / pWorld[3];
+		pWorld[2] = pWorld[2] / pWorld[3];
+		pWorld[3] = pWorld[3] / pWorld[3];
+
+		var ray = pWorld - camera1.vrp;
+		var q = camera1.vrp;
+
+		showReflection = !showReflection;
+	})
 
     gl.viewport( 0, 0, canvas.width, canvas.height );
     gl.clearColor( 0.9, 0.9, 0.9, 1.0 );
@@ -268,6 +293,8 @@ window.onload = function init(){
 
     platform1bottom = new PlatformBottom(0,0,0,0.2,0,0,0,amb,dif,spec,shine);
 	platform1top = new PlatformTop(0,0,0,0.2,0,0,0,amb,dif,spec,shine);
+	buttonStand = new Cube(0,0.1,1,0.1,0,0,0,amb,dif,spec,shine);
+	button = new Button(0,0.2,1,0.1,0,0,0,amb,dif,spec,shine);
 
 	platform2bottom = new PlatformBottom(3,0,-3,0.2,0,0,0,amb,dif,spec,shine);
 	platform2top = new PlatformTop(3,0,-3,0.2,0,0,0,amb,dif,spec,shine);
@@ -348,9 +375,9 @@ window.onload = function init(){
 		// spacebar
 		if (event.keyCode == 32) {
 			if (cameraMoveable) {
-				camera1 = cameraB;
+				camera1 = new Camera(vec3(0,4.5,4.5), vec3(1,0,0), vec3(0,Math.sqrt(2)/2,-Math.sqrt(2)/2), vec3(0,Math.sqrt(2)/2,Math.sqrt(2)/2));
 			} else {
-				camera1 = cameraA;
+				camera1 = new Camera(vec3(0,0.5,2), vec3(1,0,0), vec3(0,1,0), vec3(0,0,1));
 			}
 			cameraMoveable = !cameraMoveable;
 		}
@@ -360,6 +387,7 @@ window.onload = function init(){
 var directionX = 1;
 var directionY = 1;
 var step = 0;
+var theta = 2.5;
 function render(){
 	setTimeout(function() {
 		requestAnimationFrame(render);
@@ -373,6 +401,8 @@ function render(){
 
 		platform1bottom.draw();
 		platform1top.draw();
+		buttonStand.draw();
+		button.draw();
 
 		platform2bottom.draw();
 		platform2top.draw();
@@ -386,12 +416,21 @@ function render(){
 		platform5bottom.draw();
 		platform5top.draw();
 
+		smf1.rotateObject(theta);
 		smf1.draw();
+
+		smf2.rotateObject(theta);
 		smf2.draw();
+
+		smf3.rotateObject(theta);
 		smf3.draw();
+
+		smf4.rotateObject(theta);
 		smf4.draw();
 
-		orb.draw();
+		if (showReflection) {
+			orb.draw();
+		}
 	}, 100);
 }
 

@@ -168,9 +168,7 @@ class Frog extends Drawable{
 		Frog.fname = fname;
         if(Frog.shaderProgram == -1)
             Frog.initialize()
-			Frog.initializeTexture();
-
-        
+			Frog.initializeTexture();        
     }
     
     draw() {

@@ -316,7 +316,25 @@ window.onload = function init(){
 
 	orb = new Orb(posOrb[0],posOrb[1],posOrb[2],scaleOrb,rot[0],rot[1],rot[2],amb,dif,spec,shine);
 
-	objects = [ground1, room1, platform1bottom, platform1top, platform2bottom, platform2top,platform3bottom, platform3top,platform4bottom, platform4top,platform5bottom, platform5top, smf1, smf2, smf3, smf4]
+	objects = [ground1, 
+		room1, 
+		platform1bottom, 
+		platform1top, 
+		platform2bottom, 
+		platform2top,
+		platform3bottom, 
+		platform3top,
+		platform4bottom, 
+		platform4top,
+		platform5bottom, 
+		platform5top, 
+		smf1, 
+		smf2, 
+		smf3, 
+		smf4,
+		buttonStand,
+		button
+	]
 
 
     render();

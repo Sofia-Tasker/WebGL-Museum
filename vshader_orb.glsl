@@ -4,6 +4,7 @@ in vec4 aColor;
 in vec3 aNormal;
 
 out vec4 vColor;
+out vec3 texCoord;
 
 uniform mat4 modelMatrix, cameraMatrix, projectionMatrix;
 
@@ -19,6 +20,7 @@ uniform vec4 SlightAmbient, SlightDiffuse, SlightSpecular;
 void main()
 {
     gl_Position = projectionMatrix*cameraMatrix*modelMatrix*vec4(aPosition,1.0);
+    texCoord = normalize(aPosition.xyz);
     
     //compute vectors in camera coordinates
     //the vertex in camera coordinates
@@ -66,11 +68,4 @@ void main()
     SlightColor.a = 1.0;
 
     vColor = 0.4*aColor+0.4*lightColor+0.9*SlightColor;
-
-    vec3 V = normalize(inverse(cameraMatrix)*vec4(0,0,0,1)-modelMatrix*vec4(aPosition,1.0)).xyz;
-    vec3 I = -V;
-    vec3 M = normalize(modelMatrix*vec4(aNormal,0.0)).xyz;
-
-    reflect(I, M);
-
 }

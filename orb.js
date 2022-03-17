@@ -33,6 +33,14 @@ class Orb extends Drawable{
     static uSLightAmbientShader = -1;
     static uSLightDiffuseShader = -1;
     static uSLightSpecularShader = -1;
+
+	// environment texture
+	static envTexture = -1;
+	static envFrameBuffer = -1;
+	static envRenderBuffer = -1;
+  
+	static aTextureCoordShader = -1;
+	static uTextureUnitShader = -1;
     
     static computeNormals(){
 		var normalSum = [];
@@ -102,9 +110,19 @@ class Orb extends Drawable{
 
 	static createEnvironmentMap(){
 		var texsize = 256;
-		gl.bindFramebuffer(gl.FRAMEBUFFER, this.envFrameBuffer);
-		gl.bindRenderbuffer(gl.RENDERBUFFER, this.envRenderBuffer);
-		gl.bindTexture(gl.TEXTURE_CUBE_MAP,this.envTexture);
+
+		var glTextureMapDirections = [
+			gl.TEXTURE_CUBE_MAP_NEGATIVE_Z,
+			gl.TEXTURE_CUBE_MAP_POSITIVE_Z,
+			gl.TEXTURE_CUBE_MAP_NEGATIVE_X,
+			gl.TEXTURE_CUBE_MAP_POSITIVE_X,
+			gl.TEXTURE_CUBE_MAP_NEGATIVE_Y,
+			gl.TEXTURE_CUBE_MAP_POSITIVE_Y,
+		  ];
+
+		gl.bindFramebuffer(gl.FRAMEBUFFER, Orb.envFrameBuffer);
+		gl.bindRenderbuffer(gl.RENDERBUFFER, Orb.envRenderBuffer);
+		gl.bindTexture(gl.TEXTURE_CUBE_MAP,Orb.envTexture);
 
 		var origu = vec3(camera1.u);
 		var origv = vec3(camera1.v);
@@ -114,27 +132,56 @@ class Orb extends Drawable{
 
 		gl.viewport(0,0, texsize, texsize);
 
-		camera1.projectionMatrix = perspective(90, 1.0, 0.1, 100);
-		camera1.vrp = vec3(this.tx,this.ty,this.tz);
+		var tx = 0;
+		var ty = 0.9;
+		var tz = 0;
+
+		camera1.vrp = vec3(tx,ty,tz);	
 
 		for(var j = 0; j < 6; j++){
-			gl.bindTexture(gl.TEXTURE_CUBE_MAP,this.envTexture);
+			gl.bindFramebuffer(gl.FRAMEBUFFER, Orb.envFrameBuffer);
 			switch(j){
 				case 0: //-z
-					console.log('helo');
-					camera1.u = vec3(-1,0,0);
-					camera1.v = vec3(0,-1,0);
-					camera1.n = vec3(0,0,1);
-					gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, this.envTexture, 0);
+					camera1.u = vec3(-1, 0, 0);
+					camera1.v = vec3(0, -1, 0);
+					camera1.n = vec3(0, 0, 1);
+					gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, Orb.envTexture, 0);
 					break;
-					//etc..
-				default:
-					console.log('next');
+				case 1: //+z
+					camera1.u = vec3(1, 0, 0);
+					camera1.v = vec3(0, -1, 0);
+					camera1.n = vec3(0, 0, -1);
+					gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_CUBE_MAP_POSITIVE_Z, Orb.envTexture, 0);
+					break;
+				case 2: //-x
+					camera1.u = vec3(0, 0, 1);
+					camera1.v = vec3(0, -1, 0);
+					camera1.n = vec3(1, 0, 0);
+					gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_CUBE_MAP_NEGATIVE_X, Orb.envTexture, 0);
+					break;
+				case 3: //+x
+					camera1.u = vec3(0, 0, -1);
+					camera1.v = vec3(0, -1, 0);
+					camera1.n = vec3(-1, 0, 0);
+					gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_CUBE_MAP_POSITIVE_X, Orb.envTexture, 0);
+					break;
+				case 4: //-y
+					camera1.u = vec3(1, 0, 0);
+					camera1.v = vec3(0, 0, -1);
+					camera1.n = vec3(0, 1, 0);
+					gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, Orb.envTexture, 0);
+					break;
+				case 5: //+y
+					camera1.u = vec3(1, 0, 0);
+					camera1.v = vec3(0, 0, 1);
+					camera1.n = vec3(0, -1, 0);
+					gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_CUBE_MAP_POSITIVE_Y, Orb.envTexture, 0);
+					break;
 			}
 			camera1.updateCameraMatrix();
 			gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
 			for(var i = 0; i < objects.length; i++){
-				// if(objects[i]!=this)
+				if(objects[i]!=this)
 					objects[i].draw();}
 		}
 
@@ -180,6 +227,9 @@ class Orb extends Drawable{
                 Orb.indices.push(parseInt(strings[3])-1);
 			}
 		}
+
+		Orb.initializeTexture()
+
         Orb.computeNormals();
     	Orb.shaderProgram = initShaders( gl, "/vshader_orb.glsl", "/fshader_orb.glsl");
     	gl.useProgram(Orb.shaderProgram );
@@ -231,24 +281,26 @@ class Orb extends Drawable{
         super(tx,ty,tz,scale,rotX,rotY,rotZ,amb,dif,sp,sh);
         if(Orb.shaderProgram == -1)
             Orb.initialize()
-			Orb.initializeTexture()
     }
     
     draw() {
+
+		Orb.createEnvironmentMap();
     
         gl.useProgram(Orb.shaderProgram);
         
         gl.bindBuffer( gl.ARRAY_BUFFER, Orb.positionBuffer);
        	gl.vertexAttribPointer(Orb.aPositionShader, 3, gl.FLOAT, false, 0, 0 );
        	
-       	gl.bindBuffer( gl.ARRAY_BUFFER, Orb.colorBuffer);
-       	gl.vertexAttribPointer(Orb.aColorShader, 4, gl.FLOAT, false, 0, 0 );
+       	// gl.bindBuffer( gl.ARRAY_BUFFER, Orb.colorBuffer);
+       	// gl.vertexAttribPointer(Orb.aColorShader, 4, gl.FLOAT, false, 0, 0 );
        	
+		gl.activeTexture(gl.TEXTURE0);
+		gl.bindTexture(gl.TEXTURE_CUBE_MAP, Orb.envTexture);
+
        	gl.bindBuffer( gl.ARRAY_BUFFER, Orb.normalBuffer);
        	gl.vertexAttribPointer(Orb.aNormalShader, 3, gl.FLOAT, false, 0, 0 );
        	
-		// Orb.createEnvironmentMap();
-
 		gl.uniformMatrix4fv(Orb.uModelMatrixShader, false, flatten(this.modelMatrix));
 		gl.uniformMatrix4fv(Orb.uCameraMatrixShader, false, flatten(camera1.cameraMatrix));
 		gl.uniformMatrix4fv(Orb.uProjectionMatrixShader, false, flatten(camera1.projectionMatrix));
@@ -272,11 +324,11 @@ class Orb extends Drawable{
 		gl.bindBuffer( gl.ELEMENT_ARRAY_BUFFER, Orb.indexBuffer);
 	
 		gl.enableVertexAttribArray(Orb.aPositionShader);    
-		gl.enableVertexAttribArray(Orb.aColorShader);
+		// gl.enableVertexAttribArray(Orb.aColorShader);
 		gl.enableVertexAttribArray(Orb.aNormalShader);    
     	gl.drawElements(gl.TRIANGLES, Orb.indices.length, gl.UNSIGNED_INT, 0);
     	gl.disableVertexAttribArray(Orb.aPositionShader);    
-    	gl.disableVertexAttribArray(Orb.aColorShader);    
+    	// gl.disableVertexAttribArray(Orb.aColorShader);    
     	gl.disableVertexAttribArray(Orb.aNormalShader);    
     }
 }

@@ -230,8 +230,10 @@ class Drawable{
     }
 }
 
-// var cube;
-// var sphere;
+var smf1;
+var smf2;
+var smf3;
+var smf4;
 var orb;
 var ground1;
 var room1;
@@ -260,9 +262,7 @@ window.onload = function init(){
     var spec = vec4(1.0,1.0,1.0,1.0);
     var shine = 100.0
 
-    //cube = new Cube(posCube[0],posCube[1],posCube[2],scaleCube,rot[0],rot[1],rot[2],amb,dif,spec,shine);
-	//cube = new Cube(0,0.1,0,0.1,0,0,0,amb,dif,spec,shine);
-	// sphere = new Sphere(posSphere[0],posSphere[1],posSphere[2],scaleSphere,rot[0],rot[1],rot[2],amb,dif,spec,shine);
+
 	ground1 = new Ground(posGround[0],posGround[1],posGround[2],scaleGround,rot[0],rot[1],rot[2],amb,dif,spec,shine);
 	room1 = new Sky(0,0,0,5,0,0,0,amb,dif,spec,shine);
 
@@ -281,11 +281,15 @@ window.onload = function init(){
 	platform5bottom = new PlatformBottom(3,0,3,0.2,0,0,0,amb,dif,spec,shine);
 	platform5top = new PlatformTop(3,0,3,0.2,0,0,0,amb,dif,spec,shine);
 
-	smf = new SMF(0,0,0,5,0,0,0,"bunny.smf");
+	smf1 = new Frog(3,0.9,-3,0.5,rot[0],rot[1],rot[2],amb,dif,spec,shine, "textures/off-white-wall.jpg");
+	smf2 = new Frog(-3,0.9,-3,0.5,rot[0],rot[1],rot[2],amb,dif,spec,shine, "textures/off-white-wall.jpg");
+	smf3 = new Frog(-3,0.9,3,0.5,rot[0],rot[1],rot[2],amb,dif,spec,shine, "textures/off-white-wall.jpg");
+	smf4 = new Frog(3,0.9,3,0.5,rot[0],rot[1],rot[2],amb,dif,spec,shine, "textures/off-white-wall.jpg");
+
 
 	orb = new Orb(posOrb[0],posOrb[1],posOrb[2],scaleOrb,rot[0],rot[1],rot[2],amb,dif,spec,shine);
 
-	objects = [ground1, room1, platform1bottom, platform1top, platform2bottom, platform2top,platform3bottom, platform3top,platform4bottom, platform4top,platform5bottom, platform5top]
+	objects = [ground1, room1, platform1bottom, platform1top, platform2bottom, platform2top,platform3bottom, platform3top,platform4bottom, platform4top,platform5bottom, platform5top, smf1, smf2, smf3, smf4]
 
 
     render();
@@ -382,7 +386,11 @@ function render(){
 		platform5bottom.draw();
 		platform5top.draw();
 
-		//smf.draw();
+		smf1.draw();
+		smf2.draw();
+		smf3.draw();
+		smf4.draw();
+
 		orb.draw();
 	}, 100);
 }

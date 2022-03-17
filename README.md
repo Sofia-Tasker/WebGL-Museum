@@ -1,6 +1,4 @@
 # Frog Museum
-Final for CS432 at Drexel University
-
 Miyo Imai and Sofia Tasker
 
 This is a WebGL project representing a room in a museum. To run the program, navigate to the cs432Final directory and run python -m http.server
